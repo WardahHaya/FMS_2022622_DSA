@@ -277,19 +277,35 @@ void PrintPassengersForFlight(const std::vector<FlightType>& flights, int flight
     std::cout << std::endl;
 }
 
+// Function to dynamically generate city options based on available flights
+std::vector<std::string> GenerateCityOptions(const std::vector<FlightType>& flights) {
+    std::vector<std::string> cityOptions;
+    for (const auto& flight : flights) {
+        cityOptions.push_back(flight.startCity);
+        cityOptions.push_back(flight.endCity);
+    }
+    std::sort(cityOptions.begin(), cityOptions.end());
+    auto last = std::unique(cityOptions.begin(), cityOptions.end());
+    cityOptions.erase(last, cityOptions.end());
+    return cityOptions;
+}
+
 int main() {
     // Example flight data
     std::vector<FlightType> flights = {
-        {1, "CityA", 830, "CityB", 950},
-        {2, "CityA", 930, "CityC", 1130},
-        {3, "CityB", 1200, "CityC", 1400}
+        {1, "Karachi", 830, "Islamabad", 950},
+        {2, "Karachi", 930, "Lahore", 1130},
+        {3, "Lahore", 1200, "Islamabad", 1400},
+        {4, "Islamabad", 1400, "Karachi", 1600},
+        {5, "Lahore", 1100, "Karachi", 1230},
+        {6, "Islamabad", 1500, "Lahore", 1630}
         // Add more flight data as needed
     };
 
     // Example city data
-    cityList[0] = {"CityA", nullptr, nullptr};
-    cityList[1] = {"CityB", nullptr, nullptr};
-    cityList[2] = {"CityC", nullptr, nullptr};
+    cityList[0] = {"Karachi", nullptr, nullptr};
+    cityList[1] = {"Lahore", nullptr, nullptr};
+    cityList[2] = {"Islamabad", nullptr, nullptr};
     // Add more city data as needed
 
     // Choose the operation to perform
@@ -314,31 +330,88 @@ int main() {
                 ShowAllCities();
                 break;
             case 2: // Show departures for a city
-                ShowDeparturesForCity(flights, "CityA"); // Replace "CityA" with the desired city
+                {
+                    std::string startCity;
+                    std::cout << "Enter the departure city: ";
+                    std::cin >> startCity;
+                    ShowDeparturesForCity(flights, startCity.c_str());
+                }
                 break;
             case 3: // Show arrivals for a city
-                ShowArrivalsForCity(flights, "CityB"); // Replace "CityB" with the desired city
+                {
+                    std::string endCity;
+                    std::cout << "Enter the arrival city: ";
+                    std::cin >> endCity;
+                    ShowArrivalsForCity(flights, endCity.c_str());
+                }
                 break;
             case 4: // Show cities reachable from a city
-                ShowCitiesReachableFrom(flights, "CityA"); // Replace "CityA" with the desired city
+                {
+                    std::string startCity;
+                    std::cout << "Enter the starting city: ";
+                    std::cin >> startCity;
+                    ShowCitiesReachableFrom(flights, startCity.c_str());
+                }
                 break;
-                       case 5: // Show shortest path between two cities
-                ShowShortestPath(flights, "CityA", "CityC"); // Replace "CityA" and "CityC" with the desired cities
+            case 5: // Show shortest path between two cities
+                {
+                    std::string startCity, endCity;
+                    std::cout << "Enter the starting city: ";
+                    std::cin >> startCity;
+                    std::cout << "Enter the destination city: ";
+                    std::cin >> endCity;
+                    ShowShortestPath(flights, startCity.c_str(), endCity.c_str());
+                }
                 break;
             case 6: // Find a route between two cities
-                FindRoute(flights, "CityA", "CityC"); // Replace "CityA" and "CityC" with the desired cities
+                {
+                    std::string startCity, endCity;
+                    std::cout << "Enter the starting city: ";
+                    std::cin >> startCity;
+                    std::cout << "Enter the destination city: ";
+                    std::cin >> endCity;
+                    FindRoute(flights, startCity.c_str(), endCity.c_str());
+                }
                 break;
             case 7: // Make a reservation
-                MakeReservation(flights, "John", "Doe", "CityA", "CityC"); // Replace with desired passenger and cities
+                {
+                    std::string firstName, lastName, startCity, endCity;
+                    std::cout << "Enter passenger first name: ";
+                    std::cin >> firstName;
+                    std::cout << "Enter passenger last name: ";
+                    std::cin >> lastName;
+                    std::cout << "Enter departure city: ";
+                    std::cin >> startCity;
+                    std::cout << "Enter arrival city: ";
+                    std::cin >> endCity;
+                    MakeReservation(flights, firstName, lastName, startCity.c_str(), endCity.c_str());
+                }
                 break;
             case 8: // Print a passenger's reservation schedule
-                PrintPassengerSchedule("John Doe"); // Replace with the desired passenger name
+                {
+                    std::string passengerName;
+                    std::cout << "Enter passenger name: ";
+                    std::cin.ignore(); // Ignore newline character left in the stream
+                    std::getline(std::cin, passengerName);
+                    PrintPassengerSchedule(passengerName);
+                }
                 break;
             case 9: // Delete a passenger's reservation
-                DeletePassengerReservation("John Doe"); // Replace with the desired passenger name
+                {
+                    std::string passengerName;
+                    std::cout << "Enter passenger name: ";
+                    std::cin.ignore(); // Ignore newline character left in the stream
+                    std::getline(std::cin, passengerName);
+                    DeletePassengerReservation(passengerName);
+                }
                 break;
             case 10: // Print a list of passengers for a particular flight (in order of last name)
-                PrintPassengersForFlight(flights, 1); // Replace 1 with the desired flight number
+                {
+                    int flightNo;
+                    std::cout << "Enter the flight number: ";
+                    std::cin >> flightNo;
+                    PrintPassengersForFlight(flights, flightNo);
+                }
                 break;
             case 0: // Exit
                 std::cout << "Exiting program.\n";
